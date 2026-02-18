@@ -3,7 +3,7 @@
 ## 2026-02-18 — Tablet node lifecycle and concurrency
 
 **Agent**: agent-8911
-**Status**: in-progress
-**Files scanned**: Starting with `yt/yt/server/node/tablet_node/`
-**Findings**: 0
-**Notes**: Initial scan focusing on tablet node subsystem. Looking for lifetime errors, synchronization bugs, and callback misuse in tablet slot management, heartbeat handling, and session lifecycle.
+**Status**: done
+**Files scanned**: `yt/yt/server/node/tablet_node/hunk_lock_manager.cpp`, `tablet_slot.cpp`, `master_connector.cpp`
+**Findings**: 1 (high: 1, medium: 0, low: 0)
+**Notes**: Found use-after-free bug in THunkLockManager where async transaction callbacks capture raw `this` pointer. Callbacks can fire after object destruction during tablet unmount. Other files (tablet_slot, master_connector) use correct MakeWeak pattern.
